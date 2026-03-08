@@ -16,31 +16,31 @@ Use the runner in `scripts/` when the task is:
 Runner:
 
 ```bash
-node scripts/run.mjs --description "Click the browser icon on the taskbar. 请注意一定要返回最有可能操作成功的坐标的位置。"
+node scripts/run.mjs --description "Click the browser icon on the taskbar. Please return the coordinate most likely to succeed when clicked."
 ```
 
 Claude Sonnet 3.5:
 
 ```bash
-node scripts/run.mjs --description "Click the browser icon on the taskbar. 请注意一定要返回最有可能操作成功的坐标的位置。" --model claude-sonnet-3.5
+node scripts/run.mjs --description "Click the browser icon on the taskbar. Please return the coordinate most likely to succeed when clicked." --model claude-sonnet-3.5
 ```
 
 Enable final review:
 
 ```bash
-node scripts/run.mjs --description "Click the browser icon on the taskbar. 请注意一定要返回最有可能操作成功的坐标的位置。" --review
+node scripts/run.mjs --description "Click the browser icon on the taskbar. Please return the coordinate most likely to succeed when clicked." --review
 ```
 
 Enable verbose logs:
 
 ```bash
-node scripts/run.mjs --description "Click the browser icon on the taskbar. 请注意一定要返回最有可能操作成功的坐标的位置。" --verbose
+node scripts/run.mjs --description "Click the browser icon on the taskbar. Please return the coordinate most likely to succeed when clicked." --verbose
 ```
 
 Safe mode:
 
 ```bash
-node scripts/run.mjs --description "Click the browser icon on the taskbar. 请注意一定要返回最有可能操作成功的坐标的位置。" --dry-run
+node scripts/run.mjs --description "Click the browser icon on the taskbar. Please return the coordinate most likely to succeed when clicked." --dry-run
 ```
 
 Arguments:
@@ -74,7 +74,7 @@ Behavior:
 8. If `--review` is enabled, draw the candidate point back onto the full screenshot and run another 6-way parallel review vote, again starting the vote as soon as 4 successful replies arrive; otherwise skip this stage by default.
 9. Resize model-facing images to roughly 1024px on the longest side before upload by default, but allow the stage-3 local refinement image to stay larger after the pre-grid upscale so tiny targets remain readable.
 10. Retry transient OpenRouter failures automatically instead of failing on the first transport or provider hiccup, and retry desktop screenshot capture a few times before giving up.
-11. Return only one coordinate object with an explicit logical-desktop marker and note, for example `{ "coordinate_space": "logical_desktop", "coordinate_note": "这是逻辑桌面坐标，请按此坐标直接操作。", "x": ..., "y": ... }`. This is a logical desktop coordinate; use it directly for the click. Never perform the click.
+11. Return only one coordinate object with an explicit logical-desktop marker and note, for example `{ "coordinate_space": "logical_desktop", "coordinate_note": "This is a logical desktop coordinate. Use this coordinate directly.", "x": ..., "y": ... }`. This is a logical desktop coordinate; use it directly for the click. Never perform the click.
 
 Runtime diagnostics:
 
@@ -91,7 +91,7 @@ Return shape:
 ```json
 {
   "coordinate_space": "logical_desktop",
-  "coordinate_note": "这是逻辑桌面坐标，请按此坐标直接操作。",
+  "coordinate_note": "This is a logical desktop coordinate. Use this coordinate directly.",
   "x": 148,
   "y": 1041
 }
@@ -105,12 +105,12 @@ Operational rules:
 - Keep the description concrete. Mention visible labels, icon position, nearby anchors, and distinguishing features.
 - Keep the description short and target-specific. Prefer one or two strong anchors over a long paragraph.
 - Provide a sufficiently detailed and exact description so the model can precisely lock onto the right target.
-- Include this fixed sentence in the description: `请注意一定要返回最有可能操作成功的坐标的位置。` The runner also auto-appends it internally if omitted.
+- Include this fixed sentence in the description: `Please return the coordinate most likely to succeed when clicked.` The runner also auto-appends it internally if omitted.
 - Aside from that fixed sentence, the external description should only identify the target itself. Do not put bbox instructions, click-surface rules, center-point requirements, output-format requirements, or neighbor-avoidance wording into `--description`; the runner handles those internally.
 - Good example: `Windows taskbar Feishu icon`
-- Better example when lookalikes exist: `Windows 底部任务栏中间一排应用图标里的飞书（Lark）图标，蓝白色飞鸟/纸飞机形状，不是旁边的 Codex 图标，也不是其他蓝色图标`
+- Better example when lookalikes exist: `Windows taskbar centered Feishu (Lark) icon, blue-and-white bird or paper-plane logo, not the adjacent Codex icon and not other nearby blue icons`
 - Avoid: `Return the center of the full clickable bbox and avoid neighboring icons`
-- Recommended description template: `[系统或区域] + [目标精确名称] + [稳定外观特征] + [相邻锚点或顺序关系] + [明确排除的相似邻居]`
+- Recommended description template: `[system or area] + [exact target name] + [stable visual feature] + [neighbor anchor or relative order] + [explicit exclusion of lookalikes]`
 - Example template instantiation: `Windows taskbar centered Feishu (Lark) icon, blue-and-white bird/paper-plane logo, to the left of Codex, not the adjacent Codex icon`
 - Use stable structural anchors when they are naturally part of the target description, such as `taskbar`, `desktop icon`, `window title`, `sidebar`, or `toolbar`.
 - Prefer the default model and default reasoning effort first. Raise reasoning effort only when the target is unusually tiny, cluttered, rotated, or visually ambiguous.
@@ -120,4 +120,6 @@ Operational rules:
 - Do not return a tiny bbox that covers only the most visually obvious fragment of the target. If the target is an icon, include the full practical hit area or taskbar button body. If the target is an input box, search field, tab, row, menu item, or dropdown, include the full interactive body a user would naturally click.
 - Keep the `bbox` tight around the full intended hit area, not around one symbol stroke, one colored corner, one letter, or one inner decoration; the runner performs one combined precision-and-context review pass before returning coordinates.
 - Return `none` when the target is ambiguous, hidden, blocked, or not confidently identified.
+
+Contact: `amart@novaserene.com`
 

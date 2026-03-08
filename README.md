@@ -1,6 +1,11 @@
 # DeskSeeker
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18906893.svg)](https://doi.org/10.5281/zenodo.18906893)
+
 Windows desktop screenshot grounding that locates one UI target from a natural-language description and returns one logical desktop coordinate without performing any click.
+
+DOI: [10.5281/zenodo.18906893](https://doi.org/10.5281/zenodo.18906893)  
+Zenodo record: [18906893](https://zenodo.org/records/18906893)
 
 The project is designed for desktop-agent workflows where a model needs to identify a precise target such as a taskbar icon, input box, toolbar button, tab, or list row, then return a stable screen coordinate for downstream automation.
 
@@ -57,19 +62,19 @@ $env:OPENROUTER_API_KEY = "your_key_here"
 Run one grounding request:
 
 ```powershell
-node scripts/run.mjs --description "Windows taskbar browser icon. 请注意一定要返回最有可能操作成功的坐标的位置。"
+node scripts/run.mjs --description "Windows taskbar browser icon. Please return the coordinate most likely to succeed when clicked."
 ```
 
 Run with final review:
 
 ```powershell
-node scripts/run.mjs --description "Windows taskbar browser icon. 请注意一定要返回最有可能操作成功的坐标的位置。" --review
+node scripts/run.mjs --description "Windows taskbar browser icon. Please return the coordinate most likely to succeed when clicked." --review
 ```
 
 Run with verbose logs:
 
 ```powershell
-node scripts/run.mjs --description "Windows taskbar browser icon. 请注意一定要返回最有可能操作成功的坐标的位置。" --verbose
+node scripts/run.mjs --description "Windows taskbar browser icon. Please return the coordinate most likely to succeed when clicked." --verbose
 ```
 
 ## Output
@@ -79,7 +84,7 @@ Successful output:
 ```json
 {
   "coordinate_space": "logical_desktop",
-  "coordinate_note": "这是逻辑桌面坐标，请按此坐标直接操作。",
+  "coordinate_note": "This is a logical desktop coordinate. Use this coordinate directly.",
   "x": 148,
   "y": 1041
 }
@@ -104,6 +109,10 @@ This output is a logical desktop coordinate, not a physical capture-pixel coordi
 ## License
 
 MIT. Commercial use, modification, redistribution, and private use are allowed.
+
+## Contact
+
+For questions, collaboration, or research inquiries, contact: `amart@novaserene.com`
 
 ## Pre-Publish Check
 
