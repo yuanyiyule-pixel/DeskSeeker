@@ -55,7 +55,7 @@ const SCREENSHOT_CAPTURE_RETRY_BASE_DELAY_MS = 250;
 const OPENROUTER_MAX_RETRIES = 5;
 const OPENROUTER_RETRY_BASE_DELAY_MS = 1200;
 const LOG_PREFIX = '[DeskSeeker]';
-const CLICK_SUCCESS_HINT = '请注意一定要返回最有可能操作成功的坐标的位置。';
+const CLICK_SUCCESS_HINT = 'Please return the coordinate most likely to succeed when clicked.';
 const THIRD_GRID_MIN = 6;
 const THIRD_GRID_MAX = 8;
 
@@ -729,20 +729,20 @@ function normalizeTargetDescription(description) {
     .filter(Boolean);
 
   const operationalPatterns = [
-    /返回.*(坐标|中心|中心点|bbox|bounding box|clickable|可点击|点击区域)/iu,
-    /(不要|别|避免).*(选到|点到|包含).*(相邻|邻近|旁边|neighbor)/iu,
-    /(整个|完整|full).*(按钮|图标|控件|taskbar button|hit area|clickable area)/iu,
-    /(中心|center).*(可点击区域|clickable area|bbox|按钮|图标)/iu,
-    /(输出|return).*(json|坐标|bbox|center|中心点)/iu,
+  /return.*(coordinate|center|bbox|bounding box|clickable|click area)/iu,
+  /(do not|don't|avoid).*(neighbor|adjacent|nearby)/iu,
+  /(whole|full).*(button|icon|control|taskbar button|hit area|clickable area)/iu,
+  /(center).*(clickable area|bbox|button|icon)/iu,
+  /(output|return).*(json|coordinate|bbox|center)/iu,
   ];
 
   const filtered = sentenceParts.filter((part) => {
-    if (/最有可能操作成功的坐标/u.test(part)) return true;
+    if (/coordinate most likely to succeed when clicked/i.test(part)) return true;
     return !operationalPatterns.some((pattern) => pattern.test(part));
   });
 
   const normalized = filtered.join(' ').replace(/\s+/g, ' ').trim() || raw;
-  if (/最有可能操作成功的坐标/u.test(normalized)) return normalized;
+  if (/coordinate most likely to succeed when clicked/i.test(normalized)) return normalized;
   return `${normalized} ${CLICK_SUCCESS_HINT}`.trim();
 }
 
@@ -1408,15 +1408,15 @@ function normalizeAnchorToken(value) {
     .replace(/[\s-]+/g, '_');
   if (!raw) return 'center';
   const patterns = [
-    ['top_left', /^(top_left|upper_left|left_top|northwest|左上|左上角)$/u],
-    ['top_center', /^(top_center|top_middle|upper_center|upper_middle|middle_top|center_top|上中|中上)$/u],
-    ['top_right', /^(top_right|upper_right|right_top|northeast|右上|右上角)$/u],
-    ['middle_left', /^(middle_left|center_left|left_middle|left_center|west|左中|中左|左侧)$/u],
-    ['center', /^(center|middle|mid|centre|中央|中心|中间)$/u],
-    ['middle_right', /^(middle_right|center_right|right_middle|right_center|east|右中|中右|右侧)$/u],
-    ['bottom_left', /^(bottom_left|lower_left|left_bottom|southwest|左下|左下角)$/u],
-    ['bottom_center', /^(bottom_center|bottom_middle|lower_center|lower_middle|middle_bottom|center_bottom|下中|中下)$/u],
-    ['bottom_right', /^(bottom_right|lower_right|right_bottom|southeast|右下|右下角)$/u],
+  ['top_left', /^(top_left|upper_left|left_top|northwest)$/u],
+  ['top_center', /^(top_center|top_middle|upper_center|upper_middle|middle_top|center_top)$/u],
+  ['top_right', /^(top_right|upper_right|right_top|northeast)$/u],
+  ['middle_left', /^(middle_left|center_left|left_middle|left_center|west)$/u],
+  ['center', /^(center|middle|mid|centre)$/u],
+  ['middle_right', /^(middle_right|center_right|right_middle|right_center|east)$/u],
+  ['bottom_left', /^(bottom_left|lower_left|left_bottom|southwest)$/u],
+  ['bottom_center', /^(bottom_center|bottom_middle|lower_center|lower_middle|middle_bottom|center_bottom)$/u],
+  ['bottom_right', /^(bottom_right|lower_right|right_bottom|southeast)$/u],
     ['middle_left', /^(left)$/u],
     ['middle_right', /^(right)$/u],
     ['top_center', /^(top|up)$/u],
@@ -1506,14 +1506,14 @@ function normalizeOutsideDirection(value) {
     .replace(/[\s-]+/g, '_');
   if (!raw || raw === 'none') return 'none';
   const patterns = [
-    ['left', /^(left|west|左)$/u],
-    ['right', /^(right|east|右)$/u],
-    ['up', /^(up|top|north|上)$/u],
-    ['down', /^(down|bottom|south|下)$/u],
-    ['up_left', /^(up_left|top_left|upper_left|northwest|左上)$/u],
-    ['up_right', /^(up_right|top_right|upper_right|northeast|右上)$/u],
-    ['down_left', /^(down_left|bottom_left|lower_left|southwest|左下)$/u],
-    ['down_right', /^(down_right|bottom_right|lower_right|southeast|右下)$/u],
+  ['left', /^(left|west)$/u],
+  ['right', /^(right|east)$/u],
+  ['up', /^(up|top|north)$/u],
+  ['down', /^(down|bottom|south)$/u],
+  ['up_left', /^(up_left|top_left|upper_left|northwest)$/u],
+  ['up_right', /^(up_right|top_right|upper_right|northeast)$/u],
+  ['down_left', /^(down_left|bottom_left|lower_left|southwest)$/u],
+  ['down_right', /^(down_right|bottom_right|lower_right|southeast)$/u],
   ];
   for (const [name, pattern] of patterns) {
     if (pattern.test(raw)) return name;
@@ -3878,7 +3878,7 @@ async function writeJson(outPath, data) {
 function buildLogicalDesktopCoordinateResult(target) {
   return {
     coordinate_space: 'logical_desktop',
-    coordinate_note: '这是逻辑桌面坐标，请按此坐标直接操作。',
+    coordinate_note: 'This is a logical desktop coordinate. Use this coordinate directly.',
     x: target == null ? null : Number(target.x),
     y: target == null ? null : Number(target.y),
   };
