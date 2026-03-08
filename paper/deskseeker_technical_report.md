@@ -1,6 +1,8 @@
 # DeskSeeker: Toward Precise Desktop Coordinate Grounding with Multi-Stage Refinement and Majority Voting
 
-Contact: `amart@novaserene.com`
+**Ben James**  
+NovaSerene  
+amart@novaserene.com
 
 ## Abstract
 
