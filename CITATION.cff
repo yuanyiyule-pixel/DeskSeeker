@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "DeskSeeker"
+type: software
+authors:
+  - name: "Contributors"
+version: 0.1.0
+license: MIT
+abstract: "A Windows desktop screenshot grounding workflow that uses multi-stage grid refinement and majority voting to return one logical desktop coordinate for a described UI target."
